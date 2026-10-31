@@ -640,10 +640,17 @@ def get_cfg(cid: int) -> dict:
 
 
 def lb_text(scores: dict, title: str) -> str:
-    if not scores: return title + "\n\nKoi score nahi."
+    """Leaderboard text banata hai (medals ke saath)."""
+    if not scores:
+        return title + "\n\nKoi score nahi."
     txt = title + "\n━━━━━━━━━━━━━━━━━━━━━━\n"
-    for r, (uid, d) in enumerate(sorted(scores.items(), key=lambda x: x[1]["score"], reverse=True)[:10], 1):
-        txt += f"{{1:'🥇',2:'🥈',3:'🥉'}.get({r},'🏅')} *{r}. {d['name']}* — {d['score']} pts\n".replace("{1:'🥇',2:'🥈',3:'🥉'}.get(" + str(r) + ",'🏅')", {1: "🥇", 2: "🥈", 3: "🥉"}.get(r, "🏅"))
+    medals = {1: "🥇", 2: "🥈", 3: "🥉"}
+    ranked = sorted(scores.items(), key=lambda x: x[1]["score"], reverse=True)[:10]
+    for r, (uid, d) in enumerate(ranked, 1):
+        medal = medals.get(r, "🏅")
+        name = d["name"]
+        score = d["score"]
+        txt += f"{medal} *{r}. {name}* — {score} pts\n"
     return txt
 
 
